@@ -1,7 +1,7 @@
 import pytest
 
 def capital_case(x):
-    if not isinstance(x, str):
+    if not isinstance(x, str): #fdf
         raise TypeError('Debes de proporcionar un string') 
     return x.capitalize()
 
