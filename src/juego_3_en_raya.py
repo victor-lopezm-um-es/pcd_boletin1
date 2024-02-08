@@ -1,4 +1,5 @@
 import pytest
+import os
 
 fichas= ['o','x']
 
@@ -72,12 +73,47 @@ def jugada_ganadora(movimientos_jugador):
     jugador
     """
 
+    # Comprobamos si hay 3 fichas en una columna
+    if len(movimientos_jugador) == 3:
+        return True
+
     # Comprobamos si hay 3 fichas en una fila
     for fila in movimientos_jugador:
         movimientos_columna = movimientos_jugador[fila]
         if len(movimientos_columna)==3:
             return True
+    
+    # Comprobamos si hay 3 fichas en una diagonal
+    if diagonal_prin_completa(movimientos_jugador,n) or diagonal_sec_completa(movimientos_jugador,n):
+        return True
+        
     return False
+
+def diagonal_prin_completa(movimientos_jugador,n):
+    c = 0
+    for fila in movimientos_jugador:
+        movimientos_columna = movimientos_jugador[fila]
+        if not fila in movimientos_columna:
+            return False
+        c+=1
+    if c==n:
+        return True
+    return False
+
+def diagonal_sec_completa(movimientos_jugador,n):
+    c = 0
+    diag = dict()
+    for i in range(n): diag[i]=n-i-1
+    
+    for fila in movimientos_jugador:
+        movimientos_columna = movimientos_jugador[fila]
+        if not diag[fila] in movimientos_columna:
+            return False
+        
+    if c==n:
+        return True
+    return False
+
 
 def test_no_ganador():
     movimientos_jugador={2:[2,3]}
@@ -97,7 +133,7 @@ def mostrar_tablero(tablero):
     for fila in tablero:
         for celda in fila:
             print(celda,end='')
-    print('\n')
+        print('\n')
 
 #Pedimos el tamaño del tablero en que se va a realizar el juego
 n=int(input('Introduce el tamaño del tablero cuadrado:'))
@@ -129,21 +165,23 @@ while casillas_libres > 0:
         tablero= generar_tablero(n,movimientos_jugadores)
         mostrar_tablero(tablero)
         if jugada_ganadora(movimientos_jugador_activo):
-        print(F"ENHORABUENA EL JUGADOR {jugador_activo+1} HA GANADO")
-        break
+            print(f"ENHORABUENA EL JUGADOR {jugador_activo+1} HA GANADO")
+            break
 
     else:
         frequency = 2000 # Set Frequency To 2500 Hertz
         duration = 1000 # Set Duration To 1000 ms == 1 second
         print('\a')
         print("Movimiento invalido. Turno para el siguiente jugador")
-        
+
     casillas_libres= casillas_libres -1
     jugador_activo = (jugador_activo+1) % 2
 
+"""
 n = 3
 mov_jugador_1 = {}
 mov_jugador_2 = {}
 movimientos_jugadores=[mov_jugador_1, mov_jugador_2]
 t= generar_tablero(n, movimientos_jugadores)
 print(t, len(t))
+"""
